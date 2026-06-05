@@ -1,19 +1,21 @@
 package com.bookstore;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        // 1. Create the calculator object
+        BookPriceCalculator calculator = new BookPriceCalculator();
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        // 2. Define the sample basket from the Kata (2 Clean Code, 2 Clean Coder, etc.)
+        List<Integer> basket = List.of(1, 1, 2, 2, 3, 3, 4, 5);
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        // 3. Calculate the price
+        double finalPrice = calculator.calculatePrice(basket);
+
+        // 4. Print the output to the console
+        System.out.println("=====================================");
+        System.out.println("SUCCESS! The total basket price is: " + finalPrice + " EUR");
+        System.out.println("=====================================");
     }
 }
