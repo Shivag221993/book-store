@@ -50,25 +50,52 @@ public class BookPriceCalculatorTest {
         }
 
         @Test
-        @DisplayName("Scenario: Cart containing multiple items all with quantity 0 should return 0.0")
-        public void itemsWithZeroQuantityAreSafelyIgnored() {
+        @DisplayName("Scenario: Cart containing multiple items all with quantity 0 should be explicitly rejected")
+        public void itemsWithZeroQuantityAreSafelyRejected() {
             List<CartItem> zeroQuantityBasket = List.of(
                     new CartItem("1", 0),
                     new CartItem("2", 0),
                     new CartItem("5", 0)
             );
-            assertEquals(0.0, pricingService.processCartCalculation(zeroQuantityBasket), DELTA);
+
+            // FIX: Expect a validation failure because quantity 0 is now strictly blocked
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                    pricingService.processCartCalculation(zeroQuantityBasket)
+            );
+
+            assertTrue(exception.getMessage().contains("must possess a positive quantity greater than zero"));
         }
 
         @Test
-        @DisplayName("Scenario: Cart items mixed with positive and zero quantities drop the zeros and calculate correctly")
-        public void mixedZeroAndPositiveQuantities() {
+        @DisplayName("Scenario: Cart items mixed with positive and zero quantities must be explicitly rejected")
+        public void mixedZeroAndPositiveQuantitiesAreRejected() {
             List<CartItem> mixedBasket = List.of(
-                    new CartItem("1", 1), // 50.0
-                    new CartItem("2", 0), // Ignored
-                    new CartItem("3", 1)  // 50.0 -> Total 100 * 0.95 = 95.0
+                    new CartItem("1", 1),
+                    new CartItem("2", 0), // This 0 quantity will trigger the validation failure
+                    new CartItem("3", 1)
             );
-            assertEquals(95.0, pricingService.processCartCalculation(mixedBasket), DELTA);
+
+            // FIX: Expect a validation failure because even a single 0 quantity item violates our strict rule
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                    pricingService.processCartCalculation(mixedBasket)
+            );
+
+            assertTrue(exception.getMessage().contains("must possess a positive quantity greater than zero"));
+        }
+
+        @Test
+        @DisplayName("Boundary: Items with a quantity of 0 must be explicitly rejected by the validator")
+        public void zeroQuantityItemsAreRejected() {
+            List<CartItem> zeroQuantityBasket = List.of(
+                    new CartItem("1", 0),
+                    new CartItem("2", 0)
+            );
+
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                    pricingService.processCartCalculation(zeroQuantityBasket)
+            );
+
+            assertTrue(exception.getMessage().contains("must possess a positive quantity greater than zero"));
         }
     }
 
@@ -178,7 +205,8 @@ public class BookPriceCalculatorTest {
                     pricingService.processCartCalculation(negativeBasket)
             );
 
-            assertTrue(exception.getMessage().contains("Cart cannot contain negative quantities"));
+            // FIX: Match the exact validation error message string updated in CartValidator
+            assertTrue(exception.getMessage().contains("must possess a positive quantity greater than zero"));
         }
 
         @Test

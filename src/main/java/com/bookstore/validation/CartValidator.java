@@ -14,7 +14,7 @@ public class CartValidator {
 
     public void validate(List<CartItem> items) {
         if (items == null) {
-            return; // Safe fallback
+            return;
         }
         items.forEach(this::validateItem);
     }
@@ -26,8 +26,9 @@ public class CartValidator {
         if (item.bookId() == null || item.bookId().isBlank()) {
             throw new IllegalArgumentException("Book ID configuration cannot be blank.");
         }
-        if (item.quantity() < 0) {
-            throw new IllegalArgumentException("Cart cannot contain negative quantities.");
+        // MODIFIED: Quantity MUST be greater than zero. 0 and negative values are now completely blocked!
+        if (item.quantity() <= 0) {
+            throw new IllegalArgumentException("Validation Failure: Cart items must possess a positive quantity greater than zero. Found value: " + item.quantity());
         }
         if (!bookRepository.exists(item.bookId())) {
             throw new IllegalArgumentException("Validation Failure: Book ID '" + item.bookId() + "' does not exist in the store catalog.");

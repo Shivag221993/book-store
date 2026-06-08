@@ -38,30 +38,55 @@ Answer :
 
 Useful link
 Clean Code - TDD : https://cleancoders.com/episode/clean-code-episode-6-p1
-
-IMPORTANT: Implement the requirements focusing on writing the best code you can produce.
 # Book Store Pricing Engine (Kata Solution)
 
-An enterprise-ready decoupled architectural layout applying SOLID design principles to solve the complex bundle optimization problem.
+An enterprise-ready, fully decoupled architectural implementation applying SOLID design principles to solve the complex bookstore bundle optimization problem.
 
-## Tech Stack
-- **Language Level:** Java 17 (utilizing Record types, stream mapping pipelines, and switch patterns)
+---
+
+## 🛠 Tech Stack
+- **Language Level:** Java 21 (utilizing Record types, stream mapping pipelines, and functional reductions)
 - **Dependency Management & Lifecycle Automation:** Maven 3.x
-- **Testing Framework Suite:** JUnit 5.8.1 (Jupiter Engine)
+- **Testing Framework Suite:** RELEASE
 
-## Architecture Profile & SOLID Principles Realization
-The application eliminates monolithic dependencies by assigning singular, targeted profiles to separate layers:
+---
 
-1. **Single Responsibility (SRP):**
-    - `CartValidator`: Dedicated exclusively to protecting state data boundaries.
-    - `BookRepository`: Isolated layer wrapping raw item definitions.
-    - `BookPriceCalculator`: Pure decoupled calculation service focused completely on optimization.
-2. **Open/Closed (OCP):**
-    - Discount rule modifications are completely driven via `DiscountPolicyRegistry`. No system code changes are needed to modify discounts.
-3. **REST-API Contract Layer:**
-    - Designed to run inside a standard enterprise resource loop via `CartPricingController`, accepting decoupled payloads and serving accurate standard JSON HTTP structures.
+##  REST API Endpoint Specification
 
-## Error Prevention Controls
-The application explicitly validates inbound arrays to verify that item IDs correspond to mapped objects. Passing a missing configuration index value (such as ID `6` or `12`) will trigger an immediate, descriptive error response through the REST layer interface.
+### 1. Calculate Optimized Cart Price
+Calculates the dynamic minimum cost of a checkout basket by grouping distinct books to maximize promotional volume tier matching.
 
-## Quickstart Compilation Execution
+* **Endpoint Routing URL:** `POST /api/v1/cart/calculate`
+* **Content-Type Content Header:** `application/json`
+
+####  Sample Request Body Payload
+```json
+[
+  { "bookId": "1", "quantity": 2 },
+  { "bookId": "2", "quantity": 2 },
+  { "bookId": "3", "quantity": 2 },
+  { "bookId": "4", "quantity": 1 },
+  { "bookId": "5", "quantity": 1 }
+]
+
+Successful Response Contract (200 OK)
+{
+  "finalPrice": 320.00,
+  "currency": "EUR",
+  "statusMessage": "SUCCESS"
+}
+
+Invalid Catalog Index Check
+
+{
+  "finalPrice": 0.0,
+  "currency": "EUR",
+  "statusMessage": "Validation Failure: Book ID '12' does not exist in the store catalog."
+}
+
+Zero or Negative Quantity Boundary Controls
+{
+  "finalPrice": 0.0,
+  "currency": "EUR",
+  "statusMessage": "Validation Failure: Cart items must possess a positive quantity greater than zero. Found value: 0"
+}
