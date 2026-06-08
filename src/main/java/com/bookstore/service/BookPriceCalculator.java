@@ -40,7 +40,6 @@ public class BookPriceCalculator {
 
         return IntStream.rangeClosed(1, maxBundleSize)
                 .mapToDouble(bundleSize -> {
-                    // Deduct stock down a clean processing stream branch
                     double rawPriceSum = IntStream.range(0, bundleSize)
                             .mapToObj(activeIds::get)
                             .peek(id -> stockCounts.put(id, stockCounts.get(id) - 1))
@@ -50,10 +49,8 @@ public class BookPriceCalculator {
                     double modifier = discountPolicy.getOrDefault(bundleSize, 1.00);
                     double currentBundleCost = rawPriceSum * modifier;
 
-                    // Recurse down path
                     double pathCost = currentBundleCost + findOptimalPrice(stockCounts, catalog, memo);
 
-                    // Backtrack stream execution state back safely
                     IntStream.range(0, bundleSize)
                             .mapToObj(activeIds::get)
                             .forEach(id -> stockCounts.put(id, stockCounts.get(id) + 1));

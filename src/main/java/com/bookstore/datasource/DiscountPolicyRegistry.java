@@ -1,7 +1,9 @@
 package com.bookstore.datasource;
 
+import org.springframework.stereotype.Component;
 import java.util.Map;
 
+@Component
 public class DiscountPolicyRegistry {
 
     private static final Map<Integer, Double> CORE_DISCOUNTS = Map.of(

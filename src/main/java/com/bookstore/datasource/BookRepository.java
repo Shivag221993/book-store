@@ -1,12 +1,13 @@
 package com.bookstore.datasource;
 
 import com.bookstore.domain.Book;
+import org.springframework.stereotype.Repository;
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class BookRepository {
 
-    // Simulating a database catalog
     private static final Map<String, Book> CATALOG = Map.of(
             "1", new Book("1", "Clean Code", 50.0),
             "2", new Book("2", "Clean Coder", 50.0),

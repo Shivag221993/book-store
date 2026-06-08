@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/v1/cart/calculate
+Content-Type: application/json
+
+[
+  { "bookId": "1", "quantity": 2 },
+  { "bookId": "2", "quantity": 2 },
+  { "bookId": "3", "quantity": 2 },
+  { "bookId": "4", "quantity": 1 },
+  { "bookId": "5", "quantity": 1 }
+]

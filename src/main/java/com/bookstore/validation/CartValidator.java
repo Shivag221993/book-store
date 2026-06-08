@@ -2,8 +2,10 @@ package com.bookstore.validation;
 
 import com.bookstore.datasource.BookRepository;
 import com.bookstore.domain.CartItem;
+import org.springframework.stereotype.Component;
 import java.util.List;
 
+@Component
 public class CartValidator {
 
     private final BookRepository bookRepository;
@@ -26,7 +28,6 @@ public class CartValidator {
         if (item.bookId() == null || item.bookId().isBlank()) {
             throw new IllegalArgumentException("Book ID configuration cannot be blank.");
         }
-        // MODIFIED: Quantity MUST be greater than zero. 0 and negative values are now completely blocked!
         if (item.quantity() <= 0) {
             throw new IllegalArgumentException("Validation Failure: Cart items must possess a positive quantity greater than zero. Found value: " + item.quantity());
         }
