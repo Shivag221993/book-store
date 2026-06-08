@@ -1,31 +1,32 @@
 package com.bookstore;
 
+import com.bookstore.controller.CartPricingController;
+import com.bookstore.domain.CartItem;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        BookPriceCalculator calculator = new BookPriceCalculator();
+        CartPricingController apiEndpoint = new CartPricingController();
 
-        // Concrete domain representation of books instead of abstract IDs
-        Book book1 = new Book("B1", "Clean Code", 50.0);
-        Book book2 = new Book("B2", "Clean Coder", 50.0);
-        Book book3 = new Book("B3", "Clean Architecture", 50.0);
-        Book book4 = new Book("B4", "Test Driven Development", 50.0);
-        Book book5 = new Book("B5", "Refactoring", 50.0);
-
-        // Real-world cart payload matching standard API payloads
-        List<CartItem> modernBasket = List.of(
-                new CartItem(book1, 2),
-                new CartItem(book2, 2),
-                new CartItem(book3, 2),
-                new CartItem(book4, 1),
-                new CartItem(book5, 1)
+        // SCENARIO A: Happy Path REST consumer execution
+        List<CartItem> standardCartPayload = List.of(
+                new CartItem("1", 2),
+                new CartItem("2", 2),
+                new CartItem("3", 2),
+                new CartItem("4", 1),
+                new CartItem("5", 1)
         );
 
-        double finalPrice = calculator.calculateCartPrice(modernBasket);
+        var response = apiEndpoint.calculateTotal(standardCartPayload);
+        System.out.println("HTTP Status: " + response.statusCode());
+        System.out.println("Payload Response: " + response.body().finalPrice() + " " + response.body().statusMessage());
 
-        System.out.println("=====================================");
-        System.out.println("SUCCESS! The optimized cart price is: " + finalPrice + " EUR");
-        System.out.println("=====================================");
+        System.out.println("\n-------------------------------------\n");
+
+        // SCENARIO B: Unknown Book ID (e.g. 6) validation crash test execution
+        List<CartItem> invalidCartPayload = List.of(new CartItem("5", 2));
+        var errorResponse = apiEndpoint.calculateTotal(invalidCartPayload);
+        System.out.println("HTTP Status: " + errorResponse.statusCode());
+        System.out.println("Payload Error Notice: " + errorResponse.body().statusMessage());
     }
 }

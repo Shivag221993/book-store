@@ -40,25 +40,28 @@ Useful link
 Clean Code - TDD : https://cleancoders.com/episode/clean-code-episode-6-p1
 
 IMPORTANT: Implement the requirements focusing on writing the best code you can produce.
-
 # Book Store Pricing Engine (Kata Solution)
 
-An enterprise-grade, highly scalable Java solution for the Bookstore Bundle Discount Kata problem.
+An enterprise-ready decoupled architectural layout applying SOLID design principles to solve the complex bundle optimization problem.
 
-## Design Philosophy & Business Model
-Unlike standard puzzle solutions that process primitive data inputs (like arrays of raw `Integers`), this engine mimics a practical cloud ecommerce checkout workflow:
-- **`Book` (Record):** Represents a product database entry with its own individual, dynamic catalog `basePrice`.
-- **`CartItem` (Record):** Encapsulates the specific product purchase state with explicit volume tracking rules.
-- **`BookPriceCalculator` (Service):** Core decoupled optimization business processor engine.
+## Tech Stack
+- **Language Level:** Java 17 (utilizing Record types, stream mapping pipelines, and switch patterns)
+- **Dependency Management & Lifecycle Automation:** Maven 3.x
+- **Testing Framework Suite:** JUnit 5.8.1 (Jupiter Engine)
 
-## Key Technical Specifications & Enhancements
-1. **Dynamic Architecture:** Hardcoded pricing multipliers (`50.0`) are eliminated. Calculations dynamically pull individual catalog weights straight from the book records.
-2. **Robust Validation Checkpoints:** Protects execution boundaries by throwing explicit runtime exceptions against negative figures, while gracefully omitting `0` quantity entries.
-3. **Advanced Optimization Algorithm:** Replaced standard rigid index hacks with an optimized recursive backtracking mechanism powered by **State Memoization**, guaranteeing that calculations run smoothly and securely under immense enterprise checkout data stress.
+## Architecture Profile & SOLID Principles Realization
+The application eliminates monolithic dependencies by assigning singular, targeted profiles to separate layers:
 
-## Getting Started
+1. **Single Responsibility (SRP):**
+    - `CartValidator`: Dedicated exclusively to protecting state data boundaries.
+    - `BookRepository`: Isolated layer wrapping raw item definitions.
+    - `BookPriceCalculator`: Pure decoupled calculation service focused completely on optimization.
+2. **Open/Closed (OCP):**
+    - Discount rule modifications are completely driven via `DiscountPolicyRegistry`. No system code changes are needed to modify discounts.
+3. **REST-API Contract Layer:**
+    - Designed to run inside a standard enterprise resource loop via `CartPricingController`, accepting decoupled payloads and serving accurate standard JSON HTTP structures.
 
-### Build the Application Sequence
-Compile dependencies, execute the JUnit 5 validation suite, and package the executable binary completely using the integrated Maven Lifecycle wrapper script:
-```bash
-mvn clean package
+## Error Prevention Controls
+The application explicitly validates inbound arrays to verify that item IDs correspond to mapped objects. Passing a missing configuration index value (such as ID `6` or `12`) will trigger an immediate, descriptive error response through the REST layer interface.
+
+## Quickstart Compilation Execution
